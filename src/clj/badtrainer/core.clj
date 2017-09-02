@@ -1,0 +1,1 @@
+(ns badtrainer.core)
