@@ -62,21 +62,22 @@
   [:div {:style {:padding "10px" :width "100%" :height "100%"}}
    [:div {:style {:height "50%" :width "100%" :border "5px solid white" :position "fixed" :top 0 :left 0 :z-index 10}
           :on-touch-end #(re-frame/dispatch [:opponent-point (event-pos %)])}]
-   [:div {:style {:height "509%" :width "100%" :border "5px solid white" :position "fixed" :top "50%" :left 0 :z-index 10}
+   [:div {:style {:height "50%" :width "100%" :border "5px solid white" :position "fixed" :top "50%" :left 0 :z-index 10}
           :on-touch-end #(re-frame/dispatch [:home-point (event-pos %)])}]])
 
 (defn point-marker [[x y] color]
   (fn [[x y]]
-    [:circle {:cx x :cy y :r 5 :fill color}]))
+    [:circle {:cx x :cy y :r 10 :fill color}]))
 
 (defn point-markers []
   (let [home-points @(re-frame/subscribe [:home-points])
-        opponent-points @(re-frame/subscribe [:opponent-points])]
-    [:svg {:viewBox "0 0 992 1765" :style {:width "100%" :height "100%" :position "fixed" :top 0 :left 0 :z-index 1}}
-     (for [hp home-points]
-       ^{:key (first hp)} [point-marker hp "green"])
-     (for [op opponent-points]
-       ^{:key (first op)} [point-marker op "red"])]))
+        opponent-points @(re-frame/subscribe [:opponent-points])
+        home-markers (map (fn [hp] [point-marker hp "green"]) home-points)
+        opponent-markers (map (fn [op] [point-marker op "red"]) opponent-points)]
+
+    (into [:svg {:width "100%" :height "100%" :style {:position "fixed" :top 0 :left 0 :z-index 1}}]
+          (into [home-markers] opponent-markers))))
+
 
 ;; game-pane
 
