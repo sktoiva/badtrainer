@@ -2,8 +2,8 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [re-frisk.core :refer [enable-re-frisk!]]
-            [badtrainer.events]
-            [badtrainer.subs]
+            [badtrainer.events] ;; events are required so that the event handling functions are registered
+            [badtrainer.subs] ;; subs are required so that the sub handlers are registered
             [badtrainer.routes :as routes]
             [badtrainer.views :as views]
             [badtrainer.config :as config]))
