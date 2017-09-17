@@ -15,10 +15,10 @@
   #{["/greet" :get `respond-hello]
     ["/app" :get `app]})
 
-(defn start []
+(defn start [port]
   (-> {::http/routes routes
        ::http/join? false
-       ::http/port 8891
+       ::http/port port
        ::http/resource-path "public"
        ::http/secure-headers {:content-security-policy-settings {:object-src "none"}}
        ::http/type :jetty}

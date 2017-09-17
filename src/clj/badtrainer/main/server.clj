@@ -7,6 +7,9 @@
   (core/stop @server))
 
 (defn -main []
-  (reset! server (core/start))
+  (reset! server (core/start (-> "PORT"
+                                 System/getenv
+                                 Integer/parseInt)))
   (.addShutdownHook (Runtime/getRuntime)
                     (Thread. shutdown)))
+
