@@ -66,8 +66,7 @@
           :on-touch-end #(re-frame/dispatch [:home-point (event-pos %)])}]])
 
 (defn point-marker [[x y] color]
-  (fn [[x y]]
-    [:circle {:cx x :cy y :r 10 :fill color}]))
+  [:circle {:cx x :cy y :r 10 :fill color}])
 
 (defn point-markers []
   (let [home-points @(re-frame/subscribe [:home-points])
@@ -76,8 +75,20 @@
         opponent-markers (map (fn [op] [point-marker op "red"]) opponent-points)]
 
     (into [:svg {:width "100%" :height "100%" :style {:position "fixed" :top 0 :left 0 :z-index 1}}]
-          (into [home-markers] opponent-markers))))
+          (concat home-markers opponent-markers))))
 
+(defn field []
+  [:svg {:width "100%" :height "100%" :viewBox "0 0 630 1350" :style {:position "fixed" :top 0 :left 0 :z-index 0}}
+   [:rect {:x "10" :y "10" :width "610" :height "1330" :fill "none" :stroke-width "5" :stroke "white"}]
+   [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "white" :stroke-width "5"} ]
+   [:line {:x1 "575" :y1 "10" :x2 "575" :y2 "1340" :stroke "white" :stroke-width "5"}]
+   [:line {:x1 "10" :y1 "477" :x2 "620" :y2 "477" :stroke "white" :stroke-width "5"}]
+   [:line {:x1 "10" :y1 "82" :x2 "620" :y2 "82" :stroke "white" :stroke-width "5"}]
+   [:line {:x1 "10" :y1 "1268" :x2 "620" :y2 "1268" :stroke "white" :stroke-width "5"}]
+   [:line {:x1 "10" :y1 "873" :x2 "620" :y2 "873" :stroke "white" :stroke-width "5"}]
+   [:line {:x1 "300" :y1 "10" :x2 "300" :y2 "472" :stroke "white" :stroke-width "5"}]
+   [:line {:x1 "300" :y1 "868" :x2 "300" :y2 "1340" :stroke "white" :stroke-width "5"}]
+   [:line {:x1 "10" :y1 "675" :x2 "620" :y2 "675" :stroke "white" :stroke-width "5"}]])
 
 ;; game-pane
 
@@ -87,6 +98,7 @@
         height 1334]
     (fn []
       [:div {:style {:width "100%" :height "100%"}}
+       [field]
        [playing-field]
        [point-markers]
        #_[rulers-outer width height]])))
