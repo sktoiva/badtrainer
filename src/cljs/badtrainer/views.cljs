@@ -60,9 +60,9 @@
 
 (defn playing-field []
   [:div {:style {:padding "10px" :width "100%" :height "100%"}}
-   [:div {:style {:height "50%" :width "100%" :border "5px solid white" :position "fixed" :top 0 :left 0 :z-index 10}
+   [:div {:style {:height "50%" :width "100%" :position "fixed" :top 0 :left 0 :z-index 10}
           :on-touch-end #(re-frame/dispatch [:opponent-point (event-pos %)])}]
-   [:div {:style {:height "50%" :width "100%" :border "5px solid white" :position "fixed" :top "50%" :left 0 :z-index 10}
+   [:div {:style {:height "50%" :width "100%" :position "fixed" :top "50%" :left 0 :z-index 10}
           :on-touch-end #(re-frame/dispatch [:home-point (event-pos %)])}]])
 
 (defn point-marker [[x y] color]
