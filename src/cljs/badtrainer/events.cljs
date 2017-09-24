@@ -13,22 +13,21 @@
    (assoc db :active-panel active-panel)))
 
 (re-frame/reg-event-db
- :home-point
+ :start-point-tracking
  (fn [db [_ pos]]
-   (update db :home-points (fn [val]
-                                 (if (some? val)
-                                   (conj val pos)
-                                   [pos])))))
+   (assoc db :current-point {:start-pos pos
+                             :current-pos pos})))
 
 (re-frame/reg-event-db
- :opponent-point
+ :track-current-point
  (fn [db [_ pos]]
-   (update db :opponent-points (fn [val]
-                                 (if (some? val)
-                                   (conj val pos)
-                                   [pos])))))
+   (assoc-in db [:current-point :current-pos] pos)))
 
 (re-frame/reg-event-db
- :set-cursor-pos
+ :store-point
  (fn [db [_ pos]]
-   (assoc db :cursor-pos pos)))
+   (let [new-point {:start-pos (get-in db [:current-point :start-pos])
+                    :end-pos pos}]
+     (-> db
+         (update :points #(conj % new-point))
+         (dissoc :current-point)))))

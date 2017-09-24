@@ -58,27 +58,29 @@
   (let [[x y] @(re-frame/subscribe [:cursor-pos])]
     [rulers-inner x y width height]))
 
-(defn playing-field []
-  [:div {:style {:padding "10px" :width "100%" :height "100%"}}
-   [:div {:style {:height "50%" :width "100%" :position "fixed" :top 0 :left 0 :z-index 10}
-          :on-touch-end #(re-frame/dispatch [:opponent-point (event-pos %)])}]
-   [:div {:style {:height "50%" :width "100%" :position "fixed" :top "50%" :left 0 :z-index 10}
-          :on-touch-end #(re-frame/dispatch [:home-point (event-pos %)])}]])
-
 (defn point-marker [[x y] color]
   [:circle {:cx x :cy y :r 10 :fill color}])
 
 (defn point-markers []
-  (let [home-points @(re-frame/subscribe [:home-points])
-        opponent-points @(re-frame/subscribe [:opponent-points])
-        home-markers (map (fn [hp] [point-marker hp "green"]) home-points)
-        opponent-markers (map (fn [op] [point-marker op "red"]) opponent-points)]
+  (let [points @(re-frame/subscribe [:points])
+        markers (map (fn [{:keys [end-pos]}] [point-marker end-pos "green"]) points)]
 
-    (into [:svg {:width "100%" :height "100%" :style {:position "fixed" :top 0 :left 0 :z-index 1}}]
-          (concat home-markers opponent-markers))))
+    (into [:svg {:width "100%" :height "100%" :style {:position "fixed" :top 0 :left 0 :z-index 0}}]
+          markers)))
+
+(defn current-tracker []
+  (let [[x1 y1 :as start] @(re-frame/subscribe [:current-start])
+        [x2 y2] @(re-frame/subscribe [:current-track])]
+    [:svg {:width "100%" :height "100%" :style {:position "fixed" :top 0 :left 0 :z-index 1}}
+     [:circle {:cx x1 :cy y1 :r 10 :fill "black"}]
+     [:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "black" :stroke-width "5"}]]))
 
 (defn field []
-  [:svg {:width "100%" :height "100%" :viewBox "0 0 630 1350" :style {:position "fixed" :top 0 :left 0 :z-index 0}}
+  [:svg {:width "100%" :height "100%" :viewBox "0 0 630 1350"
+         :on-touch-start #(re-frame/dispatch [:start-point-tracking (event-pos %)])
+         :on-touch-move #(re-frame/dispatch [:track-current-point (event-pos %)])
+         :on-touch-end #(re-frame/dispatch [:store-point (event-pos %)])
+         :style {:position "fixed" :top 0 :left 0 :z-index 2}}
    [:rect {:x "10" :y "10" :width "610" :height "1330" :fill "none" :stroke-width "10" :stroke "white"}]
    [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "white" :stroke-width "10"} ]
    [:line {:x1 "575" :y1 "10" :x2 "575" :y2 "1340" :stroke "white" :stroke-width "10"}]
@@ -99,7 +101,7 @@
     (fn []
       [:div {:style {:width "100%" :height "100%"}}
        [field]
-       [playing-field]
+       [current-tracker]
        [point-markers]
        #_[rulers-outer width height]])))
 
