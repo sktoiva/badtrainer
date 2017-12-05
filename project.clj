@@ -29,7 +29,8 @@
                                     "test/js"
                                     "resources/public/css"]
 
-  :figwheel {:css-dirs ["resources/public/css"]}
+  :figwheel {:css-dirs ["resources/public/css"]
+             :server-port 3450}
 
   :garden {:builds [{:id           "screen"
                      :source-paths ["src/clj"]
