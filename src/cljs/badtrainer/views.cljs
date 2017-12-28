@@ -64,7 +64,6 @@
 (defn point-markers []
   (let [points @(re-frame/subscribe [:points])
         markers (map (fn [{:keys [end-pos]}] [point-marker end-pos "green"]) points)]
-
     (into [:svg {:width "100%" :height "100%" :style {:position "fixed" :top 0 :left 0}}]
           markers)))
 
@@ -77,7 +76,7 @@
 
 (defn field []
   [:svg {:width "100%" :height "100%" :viewBox "0 0 630 1350"
-         :style {:position "fixed" :top 0 :left 0}}
+         :style {:margin-top "30px" :margin-bottom "20px" :position "fixed" :top 0 :left 0}}
    [:rect {:x "10" :y "10" :width "610" :height "1330" :fill "none" :stroke-width "10" :stroke "white"}]
    [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "white" :stroke-width "10"} ]
    [:line {:x1 "575" :y1 "10" :x2 "575" :y2 "1340" :stroke "white" :stroke-width "10"}]
@@ -88,6 +87,21 @@
    [:line {:x1 "300" :y1 "10" :x2 "300" :y2 "472" :stroke "white" :stroke-width "10"}]
    [:line {:x1 "300" :y1 "868" :x2 "300" :y2 "1340" :stroke "white" :stroke-width "10"}]
    [:line {:x1 "10" :y1 "675" :x2 "620" :y2 "675" :stroke "white" :stroke-width "10"}]])
+
+(defn row [id]
+  [:div {:id id :style {:width "100%" :height "calc(100vh / 8)" :display :flex :flex-direction :row}}
+   [:div {:style {:border "1px solid black" :width "calc(100vw / 5)"}} "out-left"]
+   [:div {:style {:border "1px solid black" :width  "calc(100vw / 5)"}} "left"]
+   [:div {:style {:border "1px solid black" :width  "calc(100vw / 5)"}} "center"]
+   [:div {:style {:border "1px solid black" :width  "calc(100vw / 5)"}} "right"]
+   [:div {:style {:border "1px solid black" :width  "calc(100vw / 5)"}} "out-right"]])
+
+(defn field2 []
+  [:div {:style {:width  "100%" :display :flex :flex-direction :column}}
+   (for [pos [:away-out :away-back :away-mid :away-fore
+              :home-fore :home-mid :home-back :home-out]]
+     ^{:key pos}
+     [row pos])])
 
 ;; game-panel
 
@@ -101,6 +115,7 @@
         :on-touch-start #(re-frame/dispatch [:start-point-tracking (event-pos %)])
         :on-touch-move #(re-frame/dispatch [:track-current-point (event-pos %)])
         :on-touch-end #(re-frame/dispatch [:store-point (event-pos %)])}
+       [field2]
        [field]
        [current-tracker]
        [point-markers]
