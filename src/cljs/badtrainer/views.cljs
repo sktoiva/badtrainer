@@ -74,34 +74,52 @@
      [:circle {:cx x1 :cy y1 :r 10 :fill "black"}]
      [:line {:x1 x1 :y1 y1 :x2 x2 :y2 y2 :stroke "black" :stroke-width "5"}]]))
 
+(defonce drawn-field-size (let [field-size #(.getBoundingClientRect
+                                             (aget (.. js/document (getElementById "field") -childNodes)
+                                                   0))
+                                a (reagent/atom "0px")]
+                            (.addEventListener js/window "load" (fn [] (reset! a (field-size))))
+                            (.addEventListener js/window "resize" (fn [] (reset! a (field-size))))
+                            (js/console.log @a)
+                            a))
+
 (defn field []
-  [:svg {:width "100%" :height "100%" :viewBox "0 0 630 1350"
-         :style {:margin-top "30px" :margin-bottom "20px" :position "fixed" :top 0 :left 0}}
-   [:rect {:x "10" :y "10" :width "610" :height "1330" :fill "none" :stroke-width "10" :stroke "white"}]
-   [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "white" :stroke-width "10"} ]
-   [:line {:x1 "575" :y1 "10" :x2 "575" :y2 "1340" :stroke "white" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "477" :x2 "620" :y2 "477" :stroke "white" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "82" :x2 "620" :y2 "82" :stroke "white" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "1268" :x2 "620" :y2 "1268" :stroke "white" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "873" :x2 "620" :y2 "873" :stroke "white" :stroke-width "10"}]
-   [:line {:x1 "300" :y1 "10" :x2 "300" :y2 "472" :stroke "white" :stroke-width "10"}]
-   [:line {:x1 "300" :y1 "868" :x2 "300" :y2 "1340" :stroke "white" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "675" :x2 "620" :y2 "675" :stroke "white" :stroke-width "10"}]])
+  [:div {:class "field-container"}
+   [:svg {:id "field" :class "field" :viewBox "0 0 630 1350"}
+    [:rect {:x "10" :y "10" :width "610" :height "1330" :fill "none" :stroke-width "10" :stroke "white"}]
+    [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "white" :stroke-width "10"} ]
+    [:line {:x1 "575" :y1 "10" :x2 "575" :y2 "1340" :stroke "white" :stroke-width "10"}]
+    [:line {:x1 "10" :y1 "477" :x2 "620" :y2 "477" :stroke "white" :stroke-width "10"}]
+    [:line {:x1 "10" :y1 "82" :x2 "620" :y2 "82" :stroke "white" :stroke-width "10"}]
+    [:line {:x1 "10" :y1 "1268" :x2 "620" :y2 "1268" :stroke "white" :stroke-width "10"}]
+    [:line {:x1 "10" :y1 "873" :x2 "620" :y2 "873" :stroke "white" :stroke-width "10"}]
+    [:line {:x1 "300" :y1 "10" :x2 "300" :y2 "472" :stroke "white" :stroke-width "10"}]
+    [:line {:x1 "300" :y1 "868" :x2 "300" :y2 "1340" :stroke "white" :stroke-width "10"}]
+    [:line {:x1 "10" :y1 "675" :x2 "620" :y2 "675" :stroke "white" :stroke-width "10"}]]])
 
 (defn row [id]
-  [:div {:id id :style {:width "100%" :height "calc(100vh / 8)" :display :flex :flex-direction :row}}
-   [:div {:style {:border "1px solid black" :width "calc(100vw / 5)"}} "out-left"]
-   [:div {:style {:border "1px solid black" :width  "calc(100vw / 5)"}} "left"]
-   [:div {:style {:border "1px solid black" :width  "calc(100vw / 5)"}} "center"]
-   [:div {:style {:border "1px solid black" :width  "calc(100vw / 5)"}} "right"]
-   [:div {:style {:border "1px solid black" :width  "calc(100vw / 5)"}} "out-right"]])
+  (let [field-size @drawn-field-size
+        field-height (.-height field-size)
+        height (if (#{:away-out :home-out} id)
+                 "38px"
+                 (str (/ field-height 6) "px"))
+        field-width (.-width field-size)
+        inner-width (str (/ field-width 3) "px")
+        out-width "50px"]
+    [:div {:id id :class "row" :style {:height height}}
+     [:div {:style {:text-align :center :width out-width} :class "section"} "out-left"]
+     [:div {:style {:text-align :center :width inner-width} :class "section"} "left"]
+     [:div {:style {:text-align :center :width inner-width} :class "section"} "center"]
+     [:div {:style {:text-align :center :width inner-width} :class "section"} "right"]
+     [:div {:style {:text-align :center :width out-width} :class "section"} "out-right"]]))
 
-(defn field2 []
-  [:div {:style {:width  "100%" :display :flex :flex-direction :column}}
-   (for [pos [:away-out :away-back :away-mid :away-fore
-              :home-fore :home-mid :home-back :home-out]]
-     ^{:key pos}
-     [row pos])])
+(defn field-sections []
+  (let [top (- (.-top @drawn-field-size) 38)]
+    [:div {:class "field-sections" :style {:margin-top (str top "px")}}
+     (for [pos [:away-out :away-back :away-mid :away-fore
+                :home-fore :home-mid :home-back :home-out]]
+       ^{:key pos}
+       [row pos])]))
 
 ;; game-panel
 
@@ -111,12 +129,12 @@
         height 1334]
     (fn []
       [:div
-       {:style {:width "100%" :height "100%"}
+       {:class "game"
         :on-touch-start #(re-frame/dispatch [:start-point-tracking (event-pos %)])
         :on-touch-move #(re-frame/dispatch [:track-current-point (event-pos %)])
         :on-touch-end #(re-frame/dispatch [:store-point (event-pos %)])}
-       [field2]
        [field]
+       [field-sections]
        [current-tracker]
        [point-markers]
        #_[rulers-outer width height]])))
