@@ -4,16 +4,19 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  
-  
+
+
   :min-lein-version "2.7.1"
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.9.946"]
                  [org.clojure/core.async  "0.4.474"]
-                 [rum "0.11.2"]]
+                 [rum "0.11.2"]
+                 [garden "1.3.5"]]
 
-  :plugins [[lein-figwheel "0.5.15"]
+  :plugins [[lein-garden "0.3.0"]
+
+            [lein-figwheel "0.5.15"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
 
   :source-paths ["src"]
@@ -54,7 +57,7 @@
              ;; :server-port 3449 ;; default
              ;; :server-ip "127.0.0.1"
 
-             :css-dirs ["resources/public/css"] ;; watch and update CSS
+             :css-dirs ["resources/public/css/compiled"] ;; watch and update CSS
 
              ;; Start an nREPL server into the running figwheel process
              ;; :nrepl-port 7888
@@ -89,6 +92,13 @@
              ;; :server-logfile false
              }
 
+  :garden {:builds [{:id "dev"
+                     :source-paths ["src"]
+                     :stylesheet badtrainer.stylesheet/style
+                     :compiler {:output-to "resources/public/css/compiled/styles.css"
+                                :pretty-print? true
+                                :vendors [:moz :webkit]
+                                :auto-prefix #{:appearance}}}]}
 
   ;; Setting up nREPL for Figwheel and ClojureScript dev
   ;; Please see:
