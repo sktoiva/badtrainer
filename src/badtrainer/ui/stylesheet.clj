@@ -1,4 +1,4 @@
-(ns badtrainer.stylesheet
+(ns badtrainer.ui.stylesheet
   (:require [garden.def :refer [defstyles]]))
 
 
