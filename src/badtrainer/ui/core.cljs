@@ -1,5 +1,7 @@
 (ns badtrainer.ui.core
-    (:require [rum.core :as rum]))
+  (:require [rum.core :as rum]
+            [badtrainer.ui.util.keyboard :refer [keyboard-mixin]]
+            [goog.events.KeyCodes :as KeyCodes]))
 
 (enable-console-print!)
 
@@ -11,11 +13,12 @@
 
 (def hits (atom []))
 (def current-hits (atom []))
+(def shot-type (atom nil))
 
 (defn track-hits [event]
   (let [x (.-clientX event)
         y (.-clientY event)]
-    (swap! current-hits conj {:coords [x y]})))
+    (swap! current-hits conj {:coords [x y] :id (random-uuid)})))
 
 (defn svg-coords [[x y]]
   (let [svg (.getElementById js/document "field")
@@ -25,11 +28,12 @@
         svgPt (.matrixTransform pt (.. svg getScreenCTM inverse))]
     [(.-x svgPt) (.-y svgPt)]))
 
-(defn draw-circle [{:keys [coords]}]
+(rum/defc draw-circle < {:key-fn (fn [{:keys [id]}] id)}
+  [{:keys [coords]}]
   (let [[x y] (svg-coords coords)]
     [:circle {:cx x :cy y :r "2" :stroke "gray"}]))
 
-(defn draw-strokes [hits]
+(rum/defc draw-strokes [hits]
   (when (seq hits)
     (let [[x y] (-> hits first :coords svg-coords)
           path (concat ["M" x y]
@@ -62,29 +66,50 @@
      [:div "Current points: " (str current-points)]
      [:div "Game points: " (str game-points)]]))
 
-(rum/defc end-button
+(defn end-sequence []
+  (swap! hits conj @current-hits)
+  (reset! current-hits []))
+
+(rum/defc end-button < (keyboard-mixin KeyCodes/ENTER #(end-sequence))
   []
-  [:button {:on-click (fn []
-                        (swap! hits conj @current-hits)
-                        (reset! current-hits []))}
+  [:button {:on-click #(end-sequence)}
    "End sequence"])
 
-(rum/defc undo-button
+(defn undo []
+  (when (seq @current-hits)
+    (swap! current-hits pop)))
+
+(rum/defc undo-button < (keyboard-mixin KeyCodes/X #(undo))
   []
-  [:button {:on-click (fn []
-                        (when (seq @current-hits)
-                          (swap! current-hits pop)))}
+  [:button {:on-click #(undo)}
    "Undo"])
 
-(rum/defc hit-type-button
+(defn update-last-shot [shot]
+  (let [latest (last @current-hits)]
+    (when latest
+      (swap! current-hits
+             #(conj (pop %)
+                    (assoc latest
+                           :shot shot
+                           :type @shot-type))))))
+
+(rum/defc shot-button < { :key-fn (fn [hit-type] (name hit-type))}
   [hit-type]
-  [:button {:on-click (fn []
-                        (let [latest (last @current-hits)]
-                          (when latest
-                            (swap! current-hits
-                                   #(conj (pop %)
-                                          (assoc latest :type hit-type))))))}
+  [:button {:on-click #(update-last-shot hit-type)}
    (clojure.string/capitalize (name hit-type))])
+
+(rum/defc shot-type-selection < (keyboard-mixin KeyCodes/CTRL #(reset! shot-type :forehand) #(reset! shot-type nil))
+                                (keyboard-mixin KeyCodes/ALT #(reset! shot-type :backhand) #(reset! shot-type nil))
+                                (keyboard-mixin KeyCodes/SHIFT #(reset! shot-type :round) #(reset! shot-type nil))
+  []
+  [:div "CTRL - forehand ; ALT - backhand ; SHIFT - round"])
+
+(rum/defc shot-buttons < (keyboard-mixin KeyCodes/A #(update-last-shot :clear))
+                         (keyboard-mixin KeyCodes/S #(update-last-shot :smash))
+                         (keyboard-mixin KeyCodes/D #(update-last-shot :drop))
+  []
+  [:div
+   (mapv shot-button [:clear :smash :drop])])
 
 (rum/defc root []
   [:div
@@ -92,9 +117,8 @@
    [:br]
    (end-button)
    (undo-button)
-   (hit-type-button :clear)
-   (hit-type-button :smash)
-   (hit-type-button :drop)
+   (shot-type-selection)
+   (shot-buttons)
    (game-data)])
 
 (rum/mount (root)
