@@ -9,16 +9,15 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(defonce app-state (atom {:text "Hello world!"}))
-
 (def hits (atom []))
 (def current-hits (atom []))
 (def shot-type (atom nil))
+(def player-court (atom :upper))
 
 (defn track-hits [event]
   (let [x (.-clientX event)
         y (.-clientY event)]
-    (swap! current-hits conj {:coords [x y] :id (random-uuid)})))
+    (swap! current-hits conj {:coords [x y] :id (random-uuid) :player-court @player-court})))
 
 (defn svg-coords [[x y]]
   (let [svg (.getElementById js/document "field")
@@ -111,6 +110,15 @@
   [:div
    (mapv shot-button [:clear :smash :drop])])
 
+(rum/defc player-court-selection
+  []
+  [:div
+   [:div "Player court selection:"]
+   [:label {:for :upper} "Upper court"]
+   [:input {:type :radio :id :upper :name :player-side :value :upper :defaultChecked true :on-change #(reset! player-court :upper)}]
+   [:label {:for :lower} "Lower court"]
+   [:input {:type :radio :id :lower :name :player-side :value :lower :on-change #(reset! player-court :lower)}]])
+
 (rum/defc root []
   [:div
    (field-comp)
@@ -119,13 +127,10 @@
    (undo-button)
    (shot-type-selection)
    (shot-buttons)
+   (player-court-selection)
    (game-data)])
 
 (rum/mount (root)
            (. js/document (getElementById "app")))
 
-(defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+(defn on-js-reload [])
