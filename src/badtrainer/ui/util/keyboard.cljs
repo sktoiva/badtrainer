@@ -3,7 +3,7 @@
             [goog.events.EventType :as EventType]))
 
 (defn listen [key target event f]
-  (events/listen
+  (events/listenOnce
    target
    event
    (fn [e]
@@ -15,7 +15,14 @@
   ([key f-keydown f-keyup] (install-listener! key f-keydown f-keyup js/window))
   ([key f-keydown f-keyup target]
    (when f-keydown (listen key target EventType/KEYDOWN f-keydown))
-   (when f-keyup (listen key target EventType/KEYUP f-keyup))))
+   (when f-keyup (listen key target EventType/KEYUP f-keyup))
+   ;; Always reinstall the listener
+   (events/listen
+    target
+    EventType/KEYUP
+    (fn [e]
+      (when (= (.-keyCode e) key)
+        (install-listener! key f-keydown f-keyup target))))))
 
 (defn keyboard-mixin
   "Triggers f-keydown when key is pressed and f-keyup when key is lifted  while the component is mounted.

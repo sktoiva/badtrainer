@@ -132,5 +132,3 @@
 
 (rum/mount (root)
            (. js/document (getElementById "app")))
-
-(defn on-js-reload [])
