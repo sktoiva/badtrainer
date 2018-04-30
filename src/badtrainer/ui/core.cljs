@@ -14,12 +14,7 @@
 (def shot-type (atom nil))
 (def player-court (atom :upper))
 
-(defn track-hits [event]
-  (let [x (.-clientX event)
-        y (.-clientY event)]
-    (swap! current-hits conj {:coords [x y] :id (random-uuid) :player-court @player-court})))
-
-(defn svg-coords [[x y]]
+(defn svg-coords [x y]
   (let [svg (.getElementById js/document "field")
         pt (.createSVGPoint svg)
         _ (set! (.-x pt) x)
@@ -27,33 +22,47 @@
         svgPt (.matrixTransform pt (.. svg getScreenCTM inverse))]
     [(.-x svgPt) (.-y svgPt)]))
 
+(defn track-hits [event]
+  (let [x (.-clientX event)
+        y (.-clientY event)]
+    (swap! current-hits conj {:coords (svg-coords x y) :id (random-uuid) :player-court @player-court})))
+
 (rum/defc draw-circle < {:key-fn (fn [{:keys [id]}] id)}
   [{:keys [coords]}]
-  (let [[x y] (svg-coords coords)]
-    [:circle {:cx x :cy y :r "2" :stroke "gray"}]))
+  (let [[x y] coords]
+    [:circle {:cx x :cy y :r "3" :stroke "gray"}]))
 
 (rum/defc draw-strokes [hits]
   (when (seq hits)
-    (let [[x y] (-> hits first :coords svg-coords)
+    (let [[x y] (-> hits first :coords)
           path (concat ["M" x y]
                        (->> hits
                             rest
                             (map :coords)
-                            (map svg-coords)
                             (mapcat (fn [[x y]] ["L" x y]))))]
       [:path {:d (clojure.string/join " " path) :fill "transparent" :stroke "gray"}])))
 
-(rum/defc lines []
-  [:path {:d "M 22 15 L 327 15 L 327 685 L 22 685 Z M 0 350 L 350 350" :fill "transparent" :stroke "black"}])
+(rum/defc field []
+  [:g
+   [:rect {:x "10" :y "10" :width "610" :height "1330" :fill "none" :stroke-width "10" :stroke "black"}]
+   [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "black" :stroke-width "10"} ]
+   [:line {:x1 "575" :y1 "10" :x2 "575" :y2 "1340" :stroke "black" :stroke-width "10"}]
+   [:line {:x1 "10" :y1 "477" :x2 "620" :y2 "477" :stroke "black" :stroke-width "10"}]
+   [:line {:x1 "10" :y1 "82" :x2 "620" :y2 "82" :stroke "black" :stroke-width "10"}]
+   [:line {:x1 "10" :y1 "1268" :x2 "620" :y2 "1268" :stroke "black" :stroke-width "10"}]
+   [:line {:x1 "10" :y1 "873" :x2 "620" :y2 "873" :stroke "black" :stroke-width "10"}]
+   [:line {:x1 "300" :y1 "10" :x2 "300" :y2 "472" :stroke "black" :stroke-width "10"}]
+   [:line {:x1 "300" :y1 "868" :x2 "300" :y2 "1340" :stroke "black" :stroke-width "10"}]
+   [:line {:x1 "10" :y1 "675" :x2 "620" :y2 "675" :stroke "black" :stroke-width "10"}]])
 
 (rum/defc field-comp
   < rum/reactive
   []
   (let [chs (rum/react current-hits)]
     ;; court measurements: width 610cm (+ 45 cm outside on both sides), height 1340 cm (+30 cm outside), scaled to half
-    [:svg {:id "field" :width "350px" :height "700px" :style {:border "1px solid black"}
+    [:svg {:id "field" :width "350px" :height "700px" :style {:border "1px solid black" :padding "40px"} :viewBox "0 0 630 1350"
            :on-click #(track-hits %)}
-     (lines)
+     (field)
      (mapv draw-circle chs)
      (draw-strokes chs)]))
 
