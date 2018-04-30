@@ -117,9 +117,19 @@
   [:div
    [:div "Player court selection:"]
    [:label {:for :upper} "Upper court"]
-   [:input {:type :radio :id :upper :name :player-side :value :upper :defaultChecked true :on-change #(reset! player-court :upper)}]
+   [:input {:type :radio
+            :id :upper
+            :name :player-side
+            :defaultValue :upper
+            :defaultChecked true
+            :on-change #(reset! player-court :upper)}]
    [:label {:for :lower} "Lower court"]
-   [:input {:type :radio :id :lower :name :player-side :value :lower :on-change #(reset! player-court :lower)}]])
+   [:input {:type :radio
+            :id :lower
+            :name :player-side
+            :defaultValue :lower
+            :defaultChecked false
+            :on-change #(reset! player-court :lower)}]])
 
 (rum/defc root []
   [:div
