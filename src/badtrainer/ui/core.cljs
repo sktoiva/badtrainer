@@ -78,37 +78,39 @@
   (when (seq @current-hits)
     (swap! current-hits pop)))
 
-(rum/defc undo-button < (keyboard-mixin KeyCodes/X #(undo))
+(rum/defc undo-button < (keyboard-mixin KeyCodes/ESC #(undo))
   []
   [:button {:on-click #(undo)}
    "Undo"])
 
-(defn update-last-shot [shot]
+(defn update-last [key value]
   (let [latest (last @current-hits)]
     (when latest
       (swap! current-hits
              #(conj (pop %)
                     (assoc latest
-                           :shot shot
-                           :type @shot-type))))))
+                           key value))))))
 
-(rum/defc shot-button < { :key-fn (fn [hit-type] (name hit-type))}
-  [hit-type]
-  [:button {:on-click #(update-last-shot hit-type)}
-   (clojure.string/capitalize (name hit-type))])
+(rum/defc shot-button < { :key-fn (fn [_ val] (name val))}
+  [type val]
+  [:button {:on-click #(update-last type val)}
+   (clojure.string/capitalize (name val))])
 
-(rum/defc shot-type-selection < (keyboard-mixin KeyCodes/CTRL #(reset! shot-type :forehand) #(reset! shot-type nil))
-                                (keyboard-mixin KeyCodes/ALT #(reset! shot-type :backhand) #(reset! shot-type nil))
-                                (keyboard-mixin KeyCodes/SHIFT #(reset! shot-type :round) #(reset! shot-type nil))
-  []
-  [:div "CTRL - forehand ; ALT - backhand ; SHIFT - round"])
-
-(rum/defc shot-buttons < (keyboard-mixin KeyCodes/A #(update-last-shot :clear))
-                         (keyboard-mixin KeyCodes/S #(update-last-shot :smash))
-                         (keyboard-mixin KeyCodes/D #(update-last-shot :drop))
+(rum/defc shot-buttons < (keyboard-mixin KeyCodes/Q #(update-last :type :forehand))
+                         (keyboard-mixin KeyCodes/W #(update-last :type :backhand))
+                         (keyboard-mixin KeyCodes/E #(update-last :type :round))
+                         (keyboard-mixin KeyCodes/A #(update-last :shot :clear))
+                         (keyboard-mixin KeyCodes/S #(update-last :shot :smash))
+                         (keyboard-mixin KeyCodes/D #(update-last :shot :drop))
+                         (keyboard-mixin KeyCodes/Z #(update-last :fault :net))
   []
   [:div
-   (mapv shot-button [:clear :smash :drop])])
+   [:div
+    (mapv #(shot-button :type %) [:forehand :backhand :round])]
+   [:div
+    (mapv #(shot-button :shot %) [:clear :smash :drop])]
+   [:div
+    (mapv #(shot-button :fault %) [:net])]])
 
 (rum/defc player-court-selection
   []
@@ -125,7 +127,6 @@
    [:br]
    (end-button)
    (undo-button)
-   (shot-type-selection)
    (shot-buttons)
    (player-court-selection)
    (game-data)])
