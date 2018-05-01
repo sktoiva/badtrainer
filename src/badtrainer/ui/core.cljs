@@ -22,10 +22,18 @@
         svgPt (.matrixTransform pt (.. svg getScreenCTM inverse))]
     [(.-x svgPt) (.-y svgPt)]))
 
+(defn in? [[x y]]
+  (and
+   (> x 460)
+   (< x 5640)
+   (> y 0)
+   (< y 13400)))
+
 (defn track-hits [event]
   (let [x (.-clientX event)
-        y (.-clientY event)]
-    (swap! current-hits conj {:coords (svg-coords x y) :id (random-uuid) :player-court @player-court})))
+        y (.-clientY event)
+        coords (svg-coords x y)]
+    (swap! current-hits conj {:coords coords :id (random-uuid) :player-court @player-court :in (in? coords)})))
 
 (rum/defc draw-circle < {:key-fn (fn [{:keys [id]}] id)}
   [{:keys [coords]}]
@@ -41,19 +49,6 @@
                             (map :coords)
                             (mapcat (fn [[x y]] ["L" x y]))))]
       [:path {:d (clojure.string/join " " path) :fill "transparent" :stroke "gray" :stroke-width "5" :class :path}])))
-
-#_(rum/defc field []
-  [:g
-   [:rect {:x "10" :y "10" :width "610" :height "1330" :fill "none" :stroke-width "10" :stroke "black"}]
-   [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "black" :stroke-width "10"}]
-   [:line {:x1 "575" :y1 "10" :x2 "575" :y2 "1340" :stroke "black" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "477" :x2 "620" :y2 "477" :stroke "black" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "82" :x2 "620" :y2 "82" :stroke "black" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "1268" :x2 "620" :y2 "1268" :stroke "black" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "873" :x2 "620" :y2 "873" :stroke "black" :stroke-width "10"}]
-   [:line {:x1 "300" :y1 "10" :x2 "300" :y2 "472" :stroke "black" :stroke-width "10"}]
-   [:line {:x1 "300" :y1 "868" :x2 "300" :y2 "1340" :stroke "black" :stroke-width "10"}]
-   [:line {:x1 "10" :y1 "675" :x2 "620" :y2 "675" :stroke "black" :stroke-width "10"}]])
 
 (rum/defc field []
   [:g
