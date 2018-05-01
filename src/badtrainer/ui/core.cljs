@@ -30,7 +30,7 @@
 (rum/defc draw-circle < {:key-fn (fn [{:keys [id]}] id)}
   [{:keys [coords]}]
   (let [[x y] coords]
-    [:circle {:cx x :cy y :r "3" :stroke "gray"}]))
+    [:circle {:cx x :cy y :r "20" :stroke "gray" :class :circle}]))
 
 (rum/defc draw-strokes [hits]
   (when (seq hits)
@@ -40,12 +40,12 @@
                             rest
                             (map :coords)
                             (mapcat (fn [[x y]] ["L" x y]))))]
-      [:path {:d (clojure.string/join " " path) :fill "transparent" :stroke "gray"}])))
+      [:path {:d (clojure.string/join " " path) :fill "transparent" :stroke "gray" :stroke-width "5" :class :path}])))
 
-(rum/defc field []
+#_(rum/defc field []
   [:g
    [:rect {:x "10" :y "10" :width "610" :height "1330" :fill "none" :stroke-width "10" :stroke "black"}]
-   [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "black" :stroke-width "10"} ]
+   [:line {:x1 "55" :y1 "10" :x2 "55" :y2 "1340" :stroke "black" :stroke-width "10"}]
    [:line {:x1 "575" :y1 "10" :x2 "575" :y2 "1340" :stroke "black" :stroke-width "10"}]
    [:line {:x1 "10" :y1 "477" :x2 "620" :y2 "477" :stroke "black" :stroke-width "10"}]
    [:line {:x1 "10" :y1 "82" :x2 "620" :y2 "82" :stroke "black" :stroke-width "10"}]
@@ -55,12 +55,46 @@
    [:line {:x1 "300" :y1 "868" :x2 "300" :y2 "1340" :stroke "black" :stroke-width "10"}]
    [:line {:x1 "10" :y1 "675" :x2 "620" :y2 "675" :stroke "black" :stroke-width "10"}]])
 
+(rum/defc field []
+  [:g
+   [:rect {:x "10" :y "10" :width "6080" :height "13380" :fill "none" :stroke-width "20" :stroke "#222222"}]
+
+   ;; upper field
+   [:g {:class :field-section-group}
+    [:rect {:x "30" :y "30" :width "440" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "490" :y "30" :width "2550" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "3060" :y "30" :width "2550" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "5630" :y "30" :width "440" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "30" :y "790" :width "440" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "490" :y "790" :width "2550" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "3060" :y "790" :width "2550" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "5630" :y "790" :width "440" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "30" :y "4710" :width "440" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "490" :y "4710" :width "5120" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "5630" :y "4710" :width "440" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]]
+
+   ;; lower field
+   [:g {:class :field-section-group}
+    [:rect {:x "30" :y "6700" :width "440" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "490" :y "6700" :width "5120" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "5630" :y "6700" :width "440" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "30" :y "8710" :width "440" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "490" :y "8710" :width "2550" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "3060" :y "8710" :width "2550" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "5630" :y "8710" :width "440" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "30" :y "12630" :width "440" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "490" :y "12630" :width "2550" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "3060" :y "12630" :width "2550" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "5630" :y "12630" :width "440" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]]
+
+   ])
+
 (rum/defc field-comp
   < rum/reactive
   []
   (let [chs (rum/react current-hits)]
     ;; court measurements: width 610cm (+ 45 cm outside on both sides), height 1340 cm (+30 cm outside), scaled to half
-    [:svg {:id "field" :width "350px" :height "700px" :style {:border "1px solid black" :padding "40px"} :viewBox "0 0 630 1350"
+    [:svg {:id "field" :width "385" :height "750" :style {:border "1px solid black" :padding "40px"} :viewBox "0 0 6100 13400"
            :on-click #(track-hits %)}
      (field)
      (mapv draw-circle chs)
@@ -75,8 +109,9 @@
      [:div "Game points: " (str game-points)]]))
 
 (defn end-sequence []
-  (swap! hits conj @current-hits)
-  (reset! current-hits []))
+  (when (seq @current-hits)
+    (swap! hits conj @current-hits)
+    (reset! current-hits [])))
 
 (rum/defc end-button < (keyboard-mixin KeyCodes/ENTER #(end-sequence))
   []
