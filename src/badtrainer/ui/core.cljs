@@ -80,9 +80,7 @@
     [:rect {:x "530" :y "13130" :width "440" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
     [:rect {:x "990" :y "13130" :width "2550" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
     [:rect {:x "3560" :y "13130" :width "2550" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "6130" :y "13130" :width "440" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]]
-
-   ])
+    [:rect {:x "6130" :y "13130" :width "440" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]]])
 
 (rum/defc field-comp
   < rum/reactive

@@ -11,8 +11,9 @@
                  [org.clojure/core.async  "0.4.474"]
                  [rum "0.11.2"]
                  [garden "1.3.5"]
-                 [io.pedestal/pedestal.service "0.5.2"]
+                 [io.pedestal/pedestal.service "0.5.2" :exclusions [com.fasterxml.jackson.core/jackson-core]]
                  [io.pedestal/pedestal.jetty "0.5.2"]
+                 [amazonica "0.3.122"]
 
                  ;; Logging integration
                  [ch.qos.logback/logback-classic "1.1.7" :exclusions [org.slf4j/slf4j-api]]

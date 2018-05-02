@@ -1,0 +1,8 @@
+version: '3'
+services:
+  dynamodb-local:
+    image: cnadiminti/dynamodb-local:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - ~/.badtrainer/dynamodb-local-db:/dynamodb_local_db
