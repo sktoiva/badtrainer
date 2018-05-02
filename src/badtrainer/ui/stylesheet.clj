@@ -3,7 +3,8 @@
 
 
 (defstyles style
-  [:circle {:pointer-events :none}]
-  [:path {:pointer-events :none}]
+  [:.circle {:pointer-events :none}]
+  [:.path {:pointer-events :none}]
+  [:.field {:border "1px solid black"}]
   [:.field-section {:pointer-events :all}
    [:&:hover {:fill "#ccc"}]])

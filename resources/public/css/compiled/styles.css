@@ -1,9 +1,13 @@
-circle {
+.circle {
   pointer-events: none;
 }
 
-path {
+.path {
   pointer-events: none;
+}
+
+.field {
+  border: 1px solid black;
 }
 
 .field-section {

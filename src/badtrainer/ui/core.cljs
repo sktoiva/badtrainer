@@ -24,10 +24,10 @@
 
 (defn in? [[x y]]
   (and
-   (> x 460)
-   (< x 5640)
-   (> y 0)
-   (< y 13400)))
+   (> x 960)
+   (< x 6140)
+   (> y 500)
+   (< y 13900)))
 
 (defn track-hits [event]
   (let [x (.-clientX event)
@@ -52,35 +52,35 @@
 
 (rum/defc field []
   [:g
-   [:rect {:x "10" :y "10" :width "6080" :height "13380" :fill "none" :stroke-width "20" :stroke "#222222"}]
+   [:rect {:x "510" :y "510" :width "6080" :height "13380" :fill "none" :stroke-width "20" :stroke "#222222"}]
 
    ;; upper field
    [:g {:class :field-section-group}
-    [:rect {:x "30" :y "30" :width "440" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "490" :y "30" :width "2550" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "3060" :y "30" :width "2550" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "5630" :y "30" :width "440" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "30" :y "790" :width "440" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "490" :y "790" :width "2550" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "3060" :y "790" :width "2550" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "5630" :y "790" :width "440" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "30" :y "4710" :width "440" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "490" :y "4710" :width "5120" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "5630" :y "4710" :width "440" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]]
+    [:rect {:x "530" :y "530" :width "440" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "990" :y "530" :width "2550" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "3560" :y "530" :width "2550" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "6130" :y "530" :width "440" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "530" :y "1290" :width "440" :height "3900" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "990" :y "1290" :width "2550" :height "3900" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "3560" :y "1290" :width "2550" :height "3900" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "6130" :y "1290" :width "440" :height "3900" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "530" :y "5210" :width "440" :height "1990" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "990" :y "5210" :width "5120" :height "1990" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "6130" :y "5210" :width "440" :height "1990" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]]
 
    ;; lower field
    [:g {:class :field-section-group}
-    [:rect {:x "30" :y "6700" :width "440" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "490" :y "6700" :width "5120" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "5630" :y "6700" :width "440" :height "1990" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "30" :y "8710" :width "440" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "490" :y "8710" :width "2550" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "3060" :y "8710" :width "2550" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "5630" :y "8710" :width "440" :height "3900" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "30" :y "12630" :width "440" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "490" :y "12630" :width "2550" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "3060" :y "12630" :width "2550" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]
-    [:rect {:x "5630" :y "12630" :width "440" :height "740" :fill "none" :stroke-width "20" :stroke "#222222" :class :field-section}]]
+    [:rect {:x "530" :y "7200" :width "440" :height "1990" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "990" :y "7200" :width "5120" :height "1990" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "6130" :y "7200" :width "440" :height "1990" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "530" :y "9210" :width "440" :height "3900" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "990" :y "9210" :width "2550" :height "3900" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "3560" :y "9210" :width "2550" :height "3900" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "6130" :y "9210" :width "440" :height "3900" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "530" :y "13130" :width "440" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "990" :y "13130" :width "2550" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "3560" :y "13130" :width "2550" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]
+    [:rect {:x "6130" :y "13130" :width "440" :height "740" :fill "white" :stroke-width "20" :stroke "#222222" :class :field-section}]]
 
    ])
 
@@ -89,7 +89,7 @@
   []
   (let [chs (rum/react current-hits)]
     ;; court measurements: width 610cm (+ 45 cm outside on both sides), height 1340 cm (+30 cm outside), scaled to half
-    [:svg {:id "field" :width "385" :height "750" :style {:border "1px solid black" :padding "40px"} :viewBox "0 0 6100 13400"
+    [:svg {:id "field" :width "385" :height "750" :class :field :viewBox "0 0 7100 14400"
            :on-click #(track-hits %)}
      (field)
      (mapv draw-circle chs)
