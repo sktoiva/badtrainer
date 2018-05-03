@@ -1,6 +1,13 @@
 (ns user
-  (:require
-   [figwheel-sidecar.repl-api :as f]))
+  (:require [figwheel-sidecar.repl-api :as f]
+            [reloaded.repl :refer [system init start stop go clear]]
+            [badtrainer.server.system :as system]))
+
+(reloaded.repl/set-init! (fn []
+                          (system/badtrainer-system {:port 3001})))
+
+(defn reset []
+  (reloaded.repl/reset))
 
 ;; user is a namespace that the Clojure runtime looks for and
 ;; loads if its available

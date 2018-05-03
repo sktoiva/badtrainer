@@ -1,15 +1,20 @@
 (ns badtrainer.main.server
-  (:require [badtrainer.server.core :as core]))
+  (:require [com.stuartsierra.component :as component]
+            [badtrainer.server.system :as system]))
 
-(def server (atom nil))
+(def system nil)
+
+(defn- set-system [system]
+  (alter-var-root #'system (constantly system)))
 
 (defn- shutdown []
-  (core/stop @server))
+  (component/stop-system system))
 
 (defn -main []
-  (reset! server (core/start (-> "PORT"
-                                 System/getenv
-                                 Integer/parseInt)))
-  (.addShutdownHook (Runtime/getRuntime)
-                    (Thread. shutdown)))
+  (let [badtrainer (system/badtrainer-system {:port (-> "PORT"
+                                                        System/getenv
+                                                        Integer/parseInt)})]
+    (set-system (component/start-system badtrainer))
+    (.addShutdownHook (Runtime/getRuntime)
+                      (Thread. shutdown))))
 
