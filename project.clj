@@ -11,9 +11,12 @@
                  [org.clojure/core.async  "0.4.474"]
                  [rum "0.11.2"]
                  [garden "1.3.5"]
+                 [aero "1.1.3"]
+                 [amazonica "0.3.122"]
+                 [buddy/buddy-auth "2.1.0"]
+                 [com.stuartsierra/component "0.3.2"]
                  [io.pedestal/pedestal.service "0.5.2" :exclusions [com.fasterxml.jackson.core/jackson-core]]
                  [io.pedestal/pedestal.jetty "0.5.2"]
-                 [amazonica "0.3.122"]
 
                  ;; Logging integration
                  [ch.qos.logback/logback-classic "1.1.7" :exclusions [org.slf4j/slf4j-api]]
@@ -119,7 +122,8 @@
                         :prep-tasks [["cljsbuild" "once" "dev"]
                                      ["garden" "once" "dev"]]}
 
-             :dev {:dependencies [[binaryage/devtools "0.9.9"]
+             :dev {:dependencies [[reloaded.repl "0.2.2"]
+                                  [binaryage/devtools "0.9.9"]
                                   [figwheel-sidecar "0.5.15"]
                                   [com.cemerick/piggieback "0.2.2"]]
                    ;; need to add dev source path here to get user.clj loaded
