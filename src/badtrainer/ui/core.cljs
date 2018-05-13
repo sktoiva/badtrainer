@@ -87,11 +87,27 @@
   []
   (let [chs (rum/react current-hits)]
     ;; court measurements: width 610cm (+ 45 cm outside on both sides), height 1340 cm (+30 cm outside), scaled to half
-    [:svg {:id "field" :width "385" :height "750" :class :field :viewBox "0 0 7100 14400"
+    [:svg {:id "field" :float "left" :width "385" :height "750" :class :field :viewBox "0 0 7100 14400"
            :on-click #(track-hits %)}
      (field)
      (mapv draw-circle chs)
      (draw-strokes chs)]))
+
+
+(rum/defc last-point-data < rum/reactive
+ []
+ (let [last-points (last (rum/react current-hits))]
+  (if (nil? last-points)
+  [:div {:style {:float "right"}}
+   [:div "No shots recorded "]]
+  [:div {:style {:float "right"}}
+   [:div "Coordinates: " (str (last-points :coords))]
+   [:div "Shot: " (str (last-points :shot))]
+   [:div "Type: " (str (last-points :type))]
+   [:div "Fault?: " (str (last-points :fault))]
+   [:div "In: " (str (last-points :in))]
+   [:div "Court: " (str (last-points :player-court))]])))
+
 
 (rum/defc game-data < rum/reactive
   []
@@ -152,7 +168,7 @@
 (rum/defc player-court-selection
   []
   [:div
-   [:div "Player court selection:"]
+   [:div "Player A court selection:"]
    [:label {:for :upper} "Upper court"]
    [:input {:type :radio
             :id :upper
@@ -170,7 +186,9 @@
 
 (rum/defc root []
   [:div
-   (field-comp)
+   [:div
+    (field-comp)
+    (last-point-data)]
    [:br]
    (end-button)
    (undo-button)
