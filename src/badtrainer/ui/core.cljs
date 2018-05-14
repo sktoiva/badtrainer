@@ -98,9 +98,9 @@
  []
  (let [last-points (last (rum/react current-hits))]
   (if (nil? last-points)
-  [:div {:style {:float "right"}}
+  [:div {:class :field-text}
    [:div "No shots recorded "]]
-  [:div {:style {:float "right"}}
+  [:div {:class :field-text}
    [:p "Coordinates: " (str (last-points :coords))]
    [:p "Shot: " (str (last-points :shot))]
    [:p "Type: " (str (last-points :type))]
