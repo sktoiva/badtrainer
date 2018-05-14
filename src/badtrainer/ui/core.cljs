@@ -101,12 +101,12 @@
   [:div {:style {:float "right"}}
    [:div "No shots recorded "]]
   [:div {:style {:float "right"}}
-   [:div "Coordinates: " (str (last-points :coords))]
-   [:div "Shot: " (str (last-points :shot))]
-   [:div "Type: " (str (last-points :type))]
-   [:div "Fault?: " (str (last-points :fault))]
-   [:div "In: " (str (last-points :in))]
-   [:div "Court: " (str (last-points :player-court))]])))
+   [:p "Coordinates: " (str (last-points :coords))]
+   [:p "Shot: " (str (last-points :shot))]
+   [:p "Type: " (str (last-points :type))]
+   [:p "Fault?: " (str (last-points :fault))]
+   [:p "In: " (str (last-points :in))]
+   [:p "Court: " (str (last-points :player-court))]])))
 
 
 (rum/defc game-data < rum/reactive
@@ -186,7 +186,7 @@
 
 (rum/defc root []
   [:div
-   [:div
+   [:div {:class :field-display}
     (field-comp)
     (last-point-data)]
    [:br]
