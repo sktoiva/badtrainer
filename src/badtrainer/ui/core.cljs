@@ -96,17 +96,17 @@
 
 (rum/defc last-point-data < rum/reactive
  []
- (let [last-points (last (rum/react current-hits))]
-  (if (nil? last-points)
-  [:div {:style {:float "right"}}
-   [:div "No shots recorded "]]
-  [:div {:style {:float "right"}}
+ (if-let [last-points (last (rum/react current-hits))]
+  [:div {:class :field-text}
    [:div "Coordinates: " (str (last-points :coords))]
    [:div "Shot: " (str (last-points :shot))]
    [:div "Type: " (str (last-points :type))]
    [:div "Fault?: " (str (last-points :fault))]
    [:div "In: " (str (last-points :in))]
-   [:div "Court: " (str (last-points :player-court))]])))
+   [:div "Court: " (str (last-points :player-court))]]
+  [:div {:class :field-text}
+   [:div "No shots recorded "]]
+   ))
 
 
 (rum/defc game-data < rum/reactive
@@ -186,7 +186,7 @@
 
 (rum/defc root []
   [:div
-   [:div
+   [:div {:class :field-display}
     (field-comp)
     (last-point-data)]
    [:br]
